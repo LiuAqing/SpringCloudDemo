@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d [%thread] %-5level %logger{36} %line - %msg%n</pattern>
+        </layout>
+    </appender>
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <!--正在记录的日志-->
+        <file>/var/log/user-client/info.log</file>
+        <encoder>
+            <charset>utf-8</charset>
+            <pattern>[%d][%thread] %highlight(%-5level) [%logger{36} %line]: %msg%n</pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--归档的日志文件路径-->
+            <!--<fileNamePattern>/home/log/info.%d.log</fileNamePattern>-->
+            <fileNamePattern>/var/log/user-client/info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--只保留七天的日志-->
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <!--正在记录的ERROR级别日志-->
+        <file>/var/log/user-client/error.log</file>
+        <encoder>
+            <charset>utf-8</charset>
+            <pattern>[%d][%thread] %highlight(%-5level) [%logger{36} %line]: %msg%n</pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+            <!--<fileNamePattern>/home/log/error.%d.log</fileNamePattern>-->
+            <fileNamePattern>/var/log/user-client/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--只保留最近七天的日志-->
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!--过滤掉第三方JAR包的DEBUG和INFO信息-->
+<!--    <logger name="com.netflix.discovery" level="WARN"/>
+    <logger name="com.ibm.mq.jmqi.remote" level="WARN"/>
+    <logger name="org.apache" level="WARN" />
+    <logger name="in.ch" level="WARN" />
+    <logger name="io" level="WARN" />
+    <logger name="org.springframework" level="WARN" />-->
+
+    <root level="info">
+        <appender-ref ref="consoleLog"/>
+        <appender-ref ref="fileInfoLog"/>
+        <appender-ref ref="fileErrorLog"/>
+    </root>
+</configuration>

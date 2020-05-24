@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.liuaq.userclient.mapper.UserMapper">
+
+    <sql id="TABLE">
+        user
+    </sql>
+    <sql id="COLUMNS">
+        id, userId, account, name, sex, email, password, birthday, create_account, create_time, modify_account, modify_time, remark
+    </sql>
+    <sql id="WHERE_QUERY">
+        <if test="id != null">
+            and id = #{id}
+        </if>
+        <if test="userId != null and userId != ''">
+            and userId = #{userId}
+        </if>
+        <if test="account != null and account != ''">
+            and account = #{account}
+        </if>
+        <if test="account != null and account != ''">
+            and account = #{account}
+        </if>
+        <if test="name != null and name != ''">
+            and name like concat('%', #{name}, '%')
+        </if>
+        <if test="sex != null and sex != ''">
+            and sex = #{sex}
+        </if>
+        <if test="createAccount != null and createAccount != ''">
+            and create_account like concat('%', #{account}, '%')
+        </if>
+        <if test="beginCreateTime != null and beginCreateTime != ''">
+            and create_time &gt; #{beginCreateTime}
+        </if>
+        <if test="endCreateTime != null and endCreateTime != ''">
+            and create_time &lt; #{endCreateTime}
+        </if>
+    </sql>
+
+    <resultMap id="UserInfo" type="com.liuaq.common.entity.base.UserEntity">
+        <result column="id" property="id"/>
+        <result column="userId" property="userId"/>
+        <result column="account" property="account"/>
+        <result column="name" property="name"/>
+        <result column="sex" property="sex"/>
+        <result column="email" property="email"/>
+        <result column="password" property="password"/>
+        <result column="birthday" property="birthday"/>
+        <result column="create_account" property="createAccount"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_account" property="modifyAccount"/>
+        <result column="modify_time" property="modifyTime"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <select id="queryById" resultMap="UserInfo">
+        select
+        <include refid="COLUMNS"/>
+        from
+        <include refid="TABLE"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <select id="queryByAccount" resultMap="UserInfo">
+        select
+        <include refid="COLUMNS"/>
+        from
+        <include refid="TABLE"/>
+        <where>
+            account = like concat('%', #{account}, '%')
+        </where>
+    </select>
+
+    <select id="queryBySearch" parameterType="com.liuaq.common.entity.search.UserSearchEntity" resultMap="UserInfo">
+        select
+        <include refid="COLUMNS"/>
+        from
+        <include refid="TABLE"/>
+        <where>
+            <include refid="WHERE_QUERY"/>
+        </where>
+    </select>
+
+    <insert id="createUser" parameterType="com.liuaq.common.entity.base.UserEntity" keyColumn="id" keyProperty="id"
+            useGeneratedKeys="true">
+        insert into
+        <include refid="TABLE"/>
+        (userId, account, name, sex, email, password, birthday, create_account, modify_account, remark)
+        values
+        (#{userId}, #{account}, #{name}, #{sex}, #{email}, #{password}, #{birthday}, #{createAccount}, #{modifyAccount},
+        #{remark})
+    </insert>
+
+    <delete id="deleteById">
+        delete
+        from
+        <include refid="TABLE"/>
+        where
+        id = #{id}
+    </delete>
+
+</mapper>
